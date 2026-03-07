@@ -135,9 +135,8 @@ dmypy.json
 
 # Project-specific
 # Raw data files (keep processed data only if needed)
-data/raw/
 data/interim/
-
+data/processed/
 # Results and outputs (can be regenerated)
 results/logs/
 results/metrics/
