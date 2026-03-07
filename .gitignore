@@ -137,6 +137,7 @@ dmypy.json
 # Raw data files (keep processed data only if needed)
 data/interim/
 data/processed/
+data/raw/*.csv
 # Results and outputs (can be regenerated)
 results/logs/
 results/metrics/
