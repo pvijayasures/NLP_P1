@@ -1,13 +1,10 @@
 import re
 import pandas as pd
-from pathlib import Path
 
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 
 from src.config import (
-    INTERIM_PATH,
-    PROCESSED_PATH,
     TEXT_COLUMN,
     CLEAN_TEXT_COLUMN,
     REMOVE_STOPWORDS,
@@ -18,10 +15,6 @@ from src.config import (
     WHITESPACE_PATTERN,
     TOKEN_PATTERN,
     PUNCTUATION,
-    TRAIN_INTERIM_FILE,
-    TRAIN_PROCESSED_FILE,
-    TEST_RAW_FILE,
-    TEST_PROCESSED_FILE,
 )
 
 
@@ -78,28 +71,3 @@ def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df[CLEAN_TEXT_COLUMN] = df[TEXT_COLUMN].fillna("").apply(clean_text)
     return df
-
-
-def preprocess_file(input_filename: str, output_filename: str | None = None) -> pd.DataFrame:
-    """Preprocess any CSV from INTERIM_PATH and save to PROCESSED_PATH."""
-    input_path = INTERIM_PATH / input_filename
-
-    if output_filename is None:
-        output_filename = f"{Path(input_filename).stem}_preprocessed.csv"
-
-    output_path = PROCESSED_PATH / output_filename
-
-    df = pd.read_csv(input_path)
-    df = preprocess_dataframe(df)
-
-    PROCESSED_PATH.mkdir(parents=True, exist_ok=True)
-    df.to_csv(output_path, index=False)
-
-    print(f"Saved: {output_path}")
-
-    return df
-
-
-if __name__ == "__main__":
-    preprocess_file(TRAIN_INTERIM_FILE, TRAIN_PROCESSED_FILE)
-    # preprocess_file(TEST_RAW_FILE, TEST_PROCESSED_FILE)
