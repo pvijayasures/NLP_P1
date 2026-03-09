@@ -21,6 +21,7 @@ def transform_text(vectorizer, texts):
 
 def save_vectorizer(vectorizer):
     """Save vectorizer to disk."""
+    print(f"Saving vectorizer to: {VECTORIZER_FILE}")
     joblib.dump(vectorizer, VECTORIZER_FILE)
 
 

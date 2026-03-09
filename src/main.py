@@ -28,6 +28,7 @@ from src.config import (
     METRICS_PATH,
     PREDICTIONS_PATH,
     PLOTS_PATH,
+    VECTORIZERS_PATH
 )
 
 from src.features import prepare_features
@@ -85,6 +86,7 @@ def ensure_directories() -> None:
     METRICS_PATH.mkdir(parents=True, exist_ok=True)
     PREDICTIONS_PATH.mkdir(parents=True, exist_ok=True)
     PLOTS_PATH.mkdir(parents=True, exist_ok=True)
+    VECTORIZERS_PATH.mkdir(parents=True, exist_ok=True)
 
 
 def save_predictions(
