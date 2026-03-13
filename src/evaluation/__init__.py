@@ -3,6 +3,7 @@ from .plots import (
     save_confusion_matrix,
     save_class_distribution,
     save_prediction_confidence_histogram,
+    save_learning_curve,
 )
 from .error_analysis import (
     build_error_analysis_dataframe,
@@ -17,6 +18,7 @@ __all__ = [
     "save_confusion_matrix",
     "save_class_distribution",
     "save_prediction_confidence_histogram",
+    "save_learning_curve",
     "build_error_analysis_dataframe",
     "save_error_analysis",
     "print_top_errors",

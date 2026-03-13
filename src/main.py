@@ -40,6 +40,7 @@ from src.evaluation import (
     save_confusion_matrix,
     save_class_distribution,
     save_prediction_confidence_histogram,
+    save_learning_curve,
     build_error_analysis_dataframe,
     save_error_analysis,
     print_top_errors,
@@ -171,6 +172,14 @@ def main() -> None:
     )
     if confidence_plot_file is not None:
         print(f"Saved prediction confidence histogram to: {confidence_plot_file}")
+
+    learning_curve_file = save_learning_curve(
+        model=model,
+        X_train=X_train,
+        y_train=y_train,
+        model_name=model_name,
+    )
+    print(f"Saved learning curve plot to: {learning_curve_file}")
 
     error_df = build_error_analysis_dataframe(
         model=model,
