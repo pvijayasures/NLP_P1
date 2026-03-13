@@ -42,8 +42,7 @@ from src.evaluation import (
     save_prediction_confidence_histogram,
     save_learning_curve,
     build_error_analysis_dataframe,
-    save_error_analysis,
-    print_top_errors,
+    save_error_analysis
 )
 
 
@@ -195,9 +194,6 @@ def main() -> None:
         only_errors=True,
     )
     print(f"Saved error analysis to: {error_file}")
-
-    print("\nTop classification errors:")
-    print_top_errors(error_df)
 
     print("\n" + "=" * 60)
     print("Pipeline finished successfully.")
