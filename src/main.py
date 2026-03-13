@@ -47,6 +47,11 @@ from src.evaluation import (
 )
 
 
+INVALID_MODEL_FEATURE_COMBINATIONS = {
+    "embeddings": {"naive_bayes"},
+}
+
+
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
@@ -112,6 +117,25 @@ def save_predictions(
     result_df.to_csv(output_path, index=False)
 
 
+def validate_model_feature_combination(
+    model_name: str,
+    feature_method: str,
+) -> None:
+    """
+    Validate whether the selected model is compatible with the chosen
+    feature engineering method.
+    """
+    invalid_models = INVALID_MODEL_FEATURE_COMBINATIONS.get(feature_method, set())
+
+    if model_name in invalid_models:
+        raise ValueError(
+            f"Invalid model/feature combination: model='{model_name}', "
+            f"feature_method='{feature_method}'. "
+            f"Multinomial Naive Bayes only works with non-negative features such as "
+            f"TF-IDF not embeddings."
+        )
+
+
 def main() -> None:
     """Run the full experimental pipeline."""
     args = parse_args()
@@ -120,6 +144,11 @@ def main() -> None:
     model_name = args.model.lower().strip()
     feature_method = args.feature_method.lower().strip()
     experiment_name = build_experiment_name(model_name, feature_method)
+
+    validate_model_feature_combination(
+        model_name=model_name,
+        feature_method=feature_method,
+    )
 
     print("=" * 60)
     print("Starting NLP experimental pipeline")
