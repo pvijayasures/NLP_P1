@@ -78,7 +78,11 @@ NLP_P1/
 - Python 3.11+ (empfohlen)
 - `pip`
 
+> **Hinweis fuer Windows-Nutzer:** Stelle sicher, dass Python zum `PATH` hinzugefuegt wurde (Checkbox waehrend der Installation). Alle Befehle funktionieren sowohl in **PowerShell** als auch in der **Eingabeaufforderung (CMD)**, sofern nicht anders angegeben.
+
 ### 2) Virtuelle Umgebung und Abhaengigkeiten
+
+**macOS / Linux:**
 
 ```bash
 python3 -m venv .venv
@@ -87,11 +91,42 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+**Windows (CMD):**
+
+```cmd
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+> **Hinweis:** Falls PowerShell die Skript-Ausfuehrung verweigert, fuehre einmalig als Administrator aus:
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+
 ### 3) NLTK-Ressource installieren
 
 Die Vorverarbeitung nutzt englische Stopwords (`nltk.corpus.stopwords`):
 
+**macOS / Linux:**
+
 ```bash
+python3 -c "import nltk; nltk.download('stopwords')"
+```
+
+**Windows:**
+
+```cmd
 python -c "import nltk; nltk.download('stopwords')"
 ```
 
@@ -116,7 +151,13 @@ wird ein einzelnes Label `label` gebildet:
 
 Ausfuehren:
 
+**macOS / Linux:**
 ```bash
+python3 -m src.data.load_data
+```
+
+**Windows:**
+```cmd
 python -m src.data.load_data
 ```
 
@@ -136,7 +177,13 @@ Die Vorverarbeitung in `src/preprocessing/clean_text.py` umfasst:
 
 Ausfuehren:
 
+**macOS / Linux:**
 ```bash
+python3 -m src.preprocessing.preprocess_pipeline
+```
+
+**Windows:**
+```cmd
 python -m src.preprocessing.preprocess_pipeline
 ```
 
@@ -148,13 +195,27 @@ Output:
 
 ### End-to-End Lauf
 
+**macOS / Linux:**
 ```bash
+python3 -m src.main --model logreg
+```
+
+**Windows:**
+```cmd
 python -m src.main --model logreg
 ```
 
 Alternative Modelle:
 
+**macOS / Linux:**
 ```bash
+python3 -m src.main --model svm
+python3 -m src.main --model naive_bayes
+python3 -m src.main --model random_forest
+```
+
+**Windows:**
+```cmd
 python -m src.main --model svm
 python -m src.main --model naive_bayes
 python -m src.main --model random_forest
@@ -169,7 +230,13 @@ Wichtige CLI-Parameter (`src/main.py`):
 
 Beispiel mit geaendertem Split:
 
+**macOS / Linux:**
 ```bash
+python3 -m src.main --model logreg --test-size 0.25 --random-state 42
+```
+
+**Windows:**
+```cmd
 python -m src.main --model logreg --test-size 0.25 --random-state 42
 ```
 
@@ -205,7 +272,13 @@ Damit sind Experimente konsistent wiederholbar, solange Datenstand und Abhaengig
 
 ### `LookupError: Resource stopwords not found`
 
+**macOS / Linux:**
 ```bash
+python3 -c "import nltk; nltk.download('stopwords')"
+```
+
+**Windows:**
+```cmd
 python -c "import nltk; nltk.download('stopwords')"
 ```
 
@@ -213,7 +286,14 @@ python -c "import nltk; nltk.download('stopwords')"
 
 Pruefe, ob diese Schritte vorher ausgefuehrt wurden:
 
+**macOS / Linux:**
 ```bash
+python3 -m src.data.load_data
+python3 -m src.preprocessing.preprocess_pipeline
+```
+
+**Windows:**
+```cmd
 python -m src.data.load_data
 python -m src.preprocessing.preprocess_pipeline
 ```
@@ -226,16 +306,3 @@ Gueltige Modellnamen sind:
 - `svm`
 - `naive_bayes`
 - `random_forest`
-
-## Tests
-
-Wenn Testdateien vorhanden sind, kannst du sie mit `pytest` ausfuehren (`pytest.ini` nutzt `tests/`):
-
-```bash
-pytest
-```
-
-## Lizenz
-
-Dieses Projekt steht unter der MIT-Lizenz. Details siehe `LICENSE`.
-
