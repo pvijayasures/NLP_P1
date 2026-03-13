@@ -14,8 +14,6 @@ Aus mehreren Toxicity-Labels wird ein einziges Ziel-Label `label` gebildet (`0 =
 - [Outputs und Artefakte](#outputs-und-artefakte)
 - [Reproduzierbarkeit](#reproduzierbarkeit)
 - [Troubleshooting](#troubleshooting)
-- [Tests](#tests)
-- [Lizenz](#lizenz)
 
 ## Projektziel
 
