@@ -5,40 +5,31 @@ from src.config import (
     TRAIN_PROCESSED_FILE,
     CLEAN_TEXT_COLUMN,
     LABEL_COLUMN,
+    FEATURE_METHOD,
 )
 
-from src.features.tfidf import (
-    build_vectorizer,
-    fit_vectorizer,
-    transform_text,
-    save_vectorizer,
-)
+from src.features.factory import get_feature_module
 
 
 def load_processed_data(filename: str = TRAIN_PROCESSED_FILE) -> pd.DataFrame:
-    """Load a processed dataset from PROCESSED_PATH."""
     return pd.read_csv(PROCESSED_PATH / filename)
 
 
-def prepare_features(filename: str = TRAIN_PROCESSED_FILE):
-    """
-    Prepare TF-IDF features from a processed dataset.
-
-    Returns:
-        X: sparse feature matrix
-        y: labels
-        vectorizer: fitted TF-IDF vectorizer
-        df: loaded dataframe
-    """
+def prepare_features(
+    filename: str = TRAIN_PROCESSED_FILE,
+    feature_method: str = FEATURE_METHOD,
+):
     df = load_processed_data(filename)
 
     texts = df[CLEAN_TEXT_COLUMN].fillna("")
     y = df[LABEL_COLUMN]
 
-    vectorizer = build_vectorizer()
-    vectorizer = fit_vectorizer(vectorizer, texts)
-    X = transform_text(vectorizer, texts)
+    feature_module = get_feature_module(feature_method)
 
-    save_vectorizer(vectorizer)
+    vectorizer = feature_module.build_vectorizer()
+    vectorizer = feature_module.fit_vectorizer(vectorizer, texts)
+    X = feature_module.transform_text(vectorizer, texts)
+
+    feature_module.save_vectorizer(vectorizer)
 
     return X, y, vectorizer, df

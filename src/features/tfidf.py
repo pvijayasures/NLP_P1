@@ -19,12 +19,19 @@ def transform_text(vectorizer, texts):
     return vectorizer.transform(texts)
 
 
+def fit_transform_text(vectorizer, texts):
+    """Fit vectorizer and transform texts."""
+    return vectorizer.fit_transform(texts)
+
+
 def save_vectorizer(vectorizer):
     """Save vectorizer to disk."""
+    VECTORIZER_FILE.parent.mkdir(parents=True, exist_ok=True)
     print(f"Saving vectorizer to: {VECTORIZER_FILE}")
     joblib.dump(vectorizer, VECTORIZER_FILE)
 
 
 def load_vectorizer():
     """Load vectorizer from disk."""
+    print(f"Loading vectorizer from: {VECTORIZER_FILE}")
     return joblib.load(VECTORIZER_FILE)

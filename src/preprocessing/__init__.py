@@ -1,7 +1,12 @@
-from .clean_text import clean_text, preprocess_dataframe
-from .preprocess_pipeline import preprocess_file
+from .preprocess_pipeline import (
+    PreprocessConfig,
+    clean_text,
+    preprocess_dataframe,
+    preprocess_file,
+)
 
 __all__ = [
+    "PreprocessConfig",
     "clean_text",
     "preprocess_dataframe",
     "preprocess_file",
