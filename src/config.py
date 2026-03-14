@@ -117,23 +117,22 @@ LOWERCASE = True
 REMOVE_URLS = True
 REMOVE_HTML = True
 REMOVE_NUMBERS = True
-REMOVE_PUNCTUATION = True
+REMOVE_PUNCTUATION = False  # Changed from True
 NORMALIZE_WHITESPACE = True
 
 # text normalization
-NORMALIZE_CONTRACTIONS = False
+NORMALIZE_CONTRACTIONS = True
 NORMALIZE_PROFANITY = True
 NORMALIZE_REPEATED_CHARACTERS = True
 
 # token filtering
-REMOVE_STOPWORDS = False
-KEEP_NEGATIONS = True
-REMOVE_SHORT_TOKENS = False
+REMOVE_STOPWORDS = False    # Changed from True
+KEEP_NEGATIONS = True       # (Irrelevant if REMOVE_STOPWORDS is False, but keep True)
+REMOVE_SHORT_TOKENS = True
 MIN_TOKEN_LENGTH = 2
 
 # morphological normalization
-STEM_WORDS = False
-LEMMATIZE_WORDS = False
+STEM_WORDS = True
 
 # dataset-level cleaning
 DROP_DUPLICATES = True

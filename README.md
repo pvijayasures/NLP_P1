@@ -1,4 +1,4 @@
-# NLP_P1 – Hate-Speech-Klassifikation (Binary)
+# NLP_P1 - Hate-Speech-Klassifikation (Binary)
 
 Dieses Projekt implementiert eine reproduzierbare NLP-Pipeline für **binäre Hate-Speech-Erkennung** auf Basis des Jigsaw-Toxicity-Datensatzes.
 Aus mehreren Toxicity-Labels wird ein einzelnes Ziel-Label `label` erzeugt (`0 = nicht-toxisch`, `1 = toxisch`), Texte werden bereinigt und anschliessend mit klassischen ML-Modellen trainiert.
@@ -12,26 +12,28 @@ Die Feature-Erzeugung ist modular:
 
 # Inhalt
 
-- [Projektziel](#projektziel)
-- [Pipeline auf einen Blick](#pipeline-auf-einen-blick)
-- [Projektstruktur](#projektstruktur)
-- [Setup](#setup)
-- [Daten und Vorverarbeitung](#daten-und-vorverarbeitung)
-- [Training und Evaluation](#training-und-evaluation)
-- [Outputs und Artefakte](#outputs-und-artefakte)
-- [Reproduzierbarkeit](#reproduzierbarkeit)
-- [Troubleshooting](#troubleshooting)
+* [Projektziel](#projektziel)
+* [Pipeline auf einen Blick](#pipeline-auf-einen-blick)
+* [Projektstruktur](#projektstruktur)
+* [Setup](#setup)
+* [Daten und Vorverarbeitung](#daten-und-vorverarbeitung)
+* [Training und Evaluation](#training-und-evaluation)
+* [Outputs und Artefakte](#outputs-und-artefakte)
+* [Reproduzierbarkeit](#reproduzierbarkeit)
+* [Troubleshooting](#troubleshooting)
 
 ## Direkte Links
 
-- [README](README.md)
-- [Konfiguration (`src/config.py`)](src/config.py)
-- [End-to-End Pipeline (`src/main.py`)](src/main.py)
-- [Datenvorbereitung (`src/data/load_data.py`)](src/data/load_data.py)
-- [Preprocessing Pipeline (`src/preprocessing/preprocess_pipeline.py`)](src/preprocessing/preprocess_pipeline.py)
-- [Feature Factory (`src/features/factory.py`)](src/features/factory.py)
-- [Model Registry (`src/models/__init__.py`)](src/models/__init__.py)
-- [Requirements (`requirements.txt`)](requirements.txt)
+* [README](README.md)
+* [Konfiguration (`src/config.py`)](src/config.py)
+* [End-to-End Pipeline (`src/main.py`)](src/main.py)
+* [Batch-Experiment-Runner (`src/run_experiment.py`)](src/run_experiment.py)
+* [Datenvorbereitung (`src/data/load_data.py`)](src/data/load_data.py)
+* [Preprocessing Pipeline (`src/preprocessing/preprocess_pipeline.py`)](src/preprocessing/preprocess_pipeline.py)
+* [Feature Pipeline (`src/features/feature_pipeline.py`)](src/features/feature_pipeline.py)
+* [Feature Factory (`src/features/factory.py`)](src/features/factory.py)
+* [Model Registry (`src/models/__init__.py`)](src/models/__init__.py)
+* [Requirements (`requirements.txt`)](requirements.txt)
 
 ---
 
@@ -96,6 +98,7 @@ NLP_P1/
 |  `- main.py             # End-to-End Pipeline
 |- requirements.txt
 `- README.md
+
 ```
 
 ---
@@ -118,6 +121,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+
 ```
 
 ### Windows (PowerShell)
@@ -127,6 +131,7 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
+
 ```
 
 ### Windows (CMD)
@@ -136,6 +141,7 @@ python -m venv .venv
 .venv\Scripts\activate.bat
 pip install --upgrade pip
 pip install -r requirements.txt
+
 ```
 
 ---
@@ -148,12 +154,14 @@ Die Vorverarbeitung nutzt englische Stopwords (`nltk.corpus.stopwords`).
 
 ```bash
 python3 -c "import nltk; nltk.download('stopwords')"
+
 ```
 
 ### Windows
 
 ```cmd
 python -c "import nltk; nltk.download('stopwords')"
+
 ```
 
 ---
@@ -179,6 +187,7 @@ obscene
 threat
 insult
 identity_hate
+
 ```
 
 wird ein einzelnes Label `label` gebildet:
@@ -192,18 +201,21 @@ macOS / Linux
 
 ```bash
 python3 -m src.data.load_data
+
 ```
 
 Windows
 
 ```cmd
 python -m src.data.load_data
+
 ```
 
 Output:
 
 ```
 data/interim/train_binary.csv
+
 ```
 
 ---
@@ -213,7 +225,8 @@ data/interim/train_binary.csv
 Die Vorverarbeitung in `src/preprocessing/preprocess_pipeline.py` umfasst unter anderem:
 
 * Lowercasing
-* Entfernen von URLs, HTML, Zahlen und Satzzeichen
+* Entfernen von URLs, HTML und Zahlen
+* optionale Zeichennormalisierung (z. B. obfuskiertes Profanity-Mapping)
 * Tokenisierung (Regex)
 * optionale Stopword-Entfernung
 * optionales Stemming
@@ -233,46 +246,20 @@ Windows
 python -m src.preprocessing.preprocess_pipeline
 ```
 
----
-
-# Wichtige optionale Parameter
-
-* `--input-file`
-* `--output-file`
-* `--text-column`
-* `--clean-text-column`
-* `--remove-stopwords`
-* `--keep-negations`
-* `--stem-words`
-* `--remove-short-tokens`
-* `--min-token-length`
-* `--drop-duplicates`
-* `--drop-empty-texts`
-
----
-
-# Beispiel
-
-macOS / Linux
-
-```bash
-python3 -m src.preprocessing.preprocess_pipeline \
-  --remove-stopwords \
-  --stem-words \
-  --min-token-length 3
-```
-
-Windows
-
-```cmd
-python -m src.preprocessing.preprocess_pipeline --remove-stopwords --stem-words --min-token-length 3
-```
+Die Pipeline nutzt die Defaults aus `src/config.py` (z. B. `REMOVE_PUNCTUATION`,
+`REMOVE_STOPWORDS`, `STEM_WORDS`, `MIN_TOKEN_LENGTH`).
 
 Output:
 
 ```
 data/processed/train_binary_preprocessed.csv
 ```
+
+### Hinweis zur Ablation
+
+`src/preprocessing/preprocess_pipeline.py` enthält zusätzlich `run_ablation_experiment()`
+für mehrere `exp_*.csv`-Varianten. Im direkten Script-Start wird aktuell jedoch
+`run_standard_pipeline()` ausgeführt.
 
 ---
 
@@ -284,12 +271,14 @@ macOS / Linux
 
 ```bash
 python3 -m src.main --model logreg --feature-method tfidf
+
 ```
 
 Windows
 
 ```cmd
 python -m src.main --model logreg --feature-method tfidf
+
 ```
 
 ---
@@ -302,6 +291,7 @@ macOS / Linux
 python3 -m src.main --model svm --feature-method tfidf
 python3 -m src.main --model naive_bayes --feature-method tfidf
 python3 -m src.main --model random_forest --feature-method tfidf
+
 ```
 
 Windows
@@ -310,7 +300,54 @@ Windows
 python -m src.main --model svm --feature-method tfidf
 python -m src.main --model naive_bayes --feature-method tfidf
 python -m src.main --model random_forest --feature-method tfidf
+
 ```
+
+---
+
+# Alle Modelle in einem Lauf
+
+`src.run_experiment` ist der Batch-Runner für Experiment-Serien.
+Er ermittelt automatisch **alle gültigen** Kombinationen aus Modell-Registry
+(`src/models/__init__.py`) und Feature-Factory (`src/features/factory.py`) und
+führt sie nacheinander als separaten `src.main`-Subprozess aus.
+Inkompatible Kombinationen (z. B. `naive_bayes + embeddings`) werden
+automatisch übersprungen und am Ende gemeldet.
+
+macOS / Linux
+
+```bash
+python3 -m src.run_experiment
+
+```
+
+Windows
+
+```cmd
+python -m src.run_experiment
+
+```
+
+Der Runner gibt am Ende eine Zusammenfassung aus:
+
+```
+============================================================
+FINAL SUMMARY
+============================================================
+Total Successful: 7
+Total Failed    : 0
+
+All experiments completed successfully.
+
+```
+
+Schlägt mindestens ein Lauf fehl, endet der Prozess mit Exit-Code 1 und listet
+alle fehlgeschlagenen Kombinationen auf.
+
+> **Hinweis:** Einzelne Läufe können weiterhin direkt über `src.main`
+> angestossen werden (siehe Abschnitt *Training und Evaluation*).
+> `src.run_experiment` unterstützt keine eigenen CLI-Argumente – alle
+> Konfigurationsdefaults werden aus `src/config.py` bezogen.
 
 ---
 
@@ -320,12 +357,14 @@ macOS / Linux
 
 ```bash
 python3 -m src.main --model logreg --feature-method embeddings
+
 ```
 
 Windows
 
 ```cmd
 python -m src.main --model logreg --feature-method embeddings
+
 ```
 
 ---
@@ -346,6 +385,7 @@ python -m src.main --model logreg --feature-method embeddings
 
 ```
 experiment_name = <model>_<feature_method>
+
 ```
 
 Beispiele für Dateinamen bei `--model logreg --feature-method tfidf`:
@@ -359,13 +399,16 @@ outputs/plots/confusion_matrix_logreg_tfidf.png
 outputs/plots/class_distribution_logreg_tfidf.png
 outputs/plots/prediction_confidence_logreg_tfidf.png
 outputs/plots/learning_curve_logreg_tfidf.png
-```
-
-Feature-Artefakte in `models/vectorizers/`:
 
 ```
-tfidf_vectorizer.joblib
-embedding_model.joblib
+
+Feature-Artefakte in `models/vectorizers/` und `models/trained/`:
+
+```
+models/vectorizers/tfidf_vectorizer.joblib
+models/trained/embedding_model.joblib
+models/vectorizers/tfidf_feature_object.joblib
+models/vectorizers/embeddings_feature_object.joblib
 ```
 
 ---
@@ -380,6 +423,7 @@ TEST_SIZE = 0.2
 MODEL_NAME = "logreg"
 FEATURE_METHOD = "tfidf"
 TRAIN_PROCESSED_FILE = "train_binary_preprocessed.csv"
+
 ```
 
 Damit sind Experimente konsistent wiederholbar, solange Datenstand und Abhängigkeiten unverändert bleiben.
@@ -394,12 +438,14 @@ macOS / Linux
 
 ```bash
 python3 -c "import nltk; nltk.download('stopwords')"
+
 ```
 
 Windows
 
 ```cmd
 python -c "import nltk; nltk.download('stopwords')"
+
 ```
 
 ---
@@ -413,6 +459,7 @@ macOS / Linux
 ```bash
 python3 -m src.data.load_data
 python3 -m src.preprocessing.preprocess_pipeline
+
 ```
 
 Windows
@@ -420,6 +467,7 @@ Windows
 ```cmd
 python -m src.data.load_data
 python -m src.preprocessing.preprocess_pipeline
+
 ```
 
 ---
